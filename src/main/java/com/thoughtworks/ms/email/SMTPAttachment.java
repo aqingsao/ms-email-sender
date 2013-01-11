@@ -25,7 +25,7 @@
  * This exception does not however invalidate any other reasons why the
  * executable file might be covered by the GNU General Public License.
  */
-package com.emergya.email.sender;
+package com.thoughtworks.ms.email;
 
 import java.io.File;
 import java.net.URL;

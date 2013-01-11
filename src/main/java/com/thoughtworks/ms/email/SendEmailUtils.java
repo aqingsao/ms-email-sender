@@ -26,7 +26,7 @@
  * executable file might be covered by the GNU General Public License.
  */
 
-package com.emergya.email.sender;
+package com.thoughtworks.ms.email;
 
 import java.util.LinkedList;
 import java.util.List;
