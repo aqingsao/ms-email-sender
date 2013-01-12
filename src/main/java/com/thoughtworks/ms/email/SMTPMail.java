@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -29,7 +31,7 @@ public class SMTPMail {
 
     protected String subject = null;
 
-    private List<SMTPAttachment> attachments = new ArrayList<SMTPAttachment>();
+    private List<String> attachments = new ArrayList<String>();
     private static final String TYPE_HTML_UTF_8 = "text/html; charset=UTF-8";
 
     public SMTPMail(String subject, Address from) {
@@ -72,40 +74,43 @@ public class SMTPMail {
         return internetAddresses;
     }
 
-    public void addAttachment(SMTPAttachment... attachments) {
-        for (SMTPAttachment attachment : attachments) {
+    public void addAttachment(String... attachments) {
+        for (String attachment : attachments) {
             this.attachments.add(attachment);
         }
     }
 
-    public void addAttachment(String... attachments) {
-        for (String attachment : attachments) {
-            this.attachments.add(new SMTPAttachment(attachment));
-        }
-    }
-
     MimeMessage buildMessage(String emailContent, Session session) throws Exception {
-        MimeMessage message = prepareMessage(session);
+        MimeMessage message = initMessage(session);
 
-        message.setContent(prepareContent(emailContent, attachments));
+        MimeMultipart multiPart = new MimeMultipart();
+        multiPart.addBodyPart(asContentPart(emailContent));
+
+        for (String attachment : attachments) {
+            multiPart.addBodyPart(asAttachmentPart(attachment));
+        }
+        message.setContent(multiPart);
 
         message.saveChanges();
         return message;
     }
 
-    private MimeMultipart prepareContent(String emailContent, List<SMTPAttachment> attachments) throws MessagingException {
-        MimeMultipart multiPart = new MimeMultipart();
-        MimeBodyPart bodyPart = new MimeBodyPart();
-        bodyPart.setContent(emailContent, TYPE_HTML_UTF_8);
-        multiPart.addBodyPart(bodyPart);
+    private MimeBodyPart asAttachmentPart(String attachment) throws MessagingException {
+        MimeBodyPart attachmentPart = new MimeBodyPart();
 
-        for (SMTPAttachment attachment : attachments) {
-            multiPart.addBodyPart(attachment.asBodyPart());
-        }
-        return multiPart;
+        FileDataSource dataSource = new FileDataSource(attachment);
+        attachmentPart.setDataHandler(new DataHandler(dataSource));
+        attachmentPart.setFileName(dataSource.getName());
+        return attachmentPart;
     }
 
-    private MimeMessage prepareMessage(Session session) throws Exception {
+    private MimeBodyPart asContentPart(String emailContent) throws MessagingException {
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setContent(emailContent, TYPE_HTML_UTF_8);
+        return bodyPart;
+    }
+
+    private MimeMessage initMessage(Session session) throws Exception {
         MimeMessage message = new MimeMessage(session);
 
         message.setFrom(from.toInternetAddress());
