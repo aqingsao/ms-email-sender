@@ -145,4 +145,8 @@ public class Email {
     public String getSubject() {
         return subject;
     }
+
+    public List<Address> getToAddresses() {
+        return recipients.getToList();
+    }
 }

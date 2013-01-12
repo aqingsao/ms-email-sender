@@ -67,4 +67,8 @@ public class Recipients {
 
         return internetAddresses;
     }
+
+    public List<Address> getToList() {
+        return toList;
+    }
 }

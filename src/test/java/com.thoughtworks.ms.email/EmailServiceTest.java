@@ -1,6 +1,5 @@
 package com.thoughtworks.ms.email;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static com.thoughtworks.ms.email.Address.anAddress;
@@ -12,11 +11,6 @@ public class EmailServiceTest {
 
     private EmailService emailService;
 
-    @Before
-    public void before() {
-        emailService = new EmailService();
-    }
-
     @Test
     public void should_send_email_with_163_as_smtp_server() {
         PropertiesEmail props = new PropertiesEmail();
@@ -25,8 +19,9 @@ public class EmailServiceTest {
         props.setAuthenticationUserName("vinci_zhang");
         props.setAuthenticationPassword("j1ngn0ng");
         props.setAuthenticationNeeded(true);
+        emailService = new EmailService(props);
 
-        boolean result = emailService.sendEmail(props, anEmail(anAddress("Admin", "vinci_zhang@163.com"), "a test email", "test body", anAddress("Xiaoqing Zhang", "vinci.zhang@gmail.com")));
+        boolean result = emailService.sendEmail(anEmail(anAddress("Admin", "vinci_zhang@163.com"), "a test email", "test body", anAddress("Xiaoqing Zhang", "vinci.zhang@gmail.com")));
         assertThat(result, is(true));
     }
 }
