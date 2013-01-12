@@ -13,67 +13,24 @@ public class SMTPSession implements TransportListener {
 
     private static final Logger LOGGER = Logger.getLogger(SMTPSession.class.getName());
 
-    /**
-     * Smtp auth
-     */
     private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
 
-    /**
-     * Smtp host
-     */
     private static final String MAIL_SMTP_HOST = "mail.smtp.host";
 
-    /**
-     * Cte True
-     */
-    private static final Boolean TRUE = true;
-
-    /**
-     * Cte False
-     */
-    private static final Boolean FALSE = false;
-
-    /**
-     * Cte True
-     */
-    private static final String TRUE_STRING = "true";
-
-    /**
-     * Cte False
-     */
-    private static final String FALSE_STRING = "false";
-
-    /**
-     * Properties
-     */
-    private PropertiesEmail props = null;
-
-    /**
-     * Properties
-     */
-    private Properties properties = null;
-
-    /**
-     * Format ISO
-     */
-    private static final String TYPE_HTML_ISO_88591 = "text/html; charset=ISO-8859-1";
-
-    /**
-     * SMTP
-     */
     private static final String SMTP = "smtp";
+
+    private PropertiesEmail props = null;
 
     public SMTPSession(PropertiesEmail props) {
         this.props = props;
-        this.properties = new Properties();
     }
 
     public void sendMail(final PropertiesEmail props, SMTPMail mail, String emailContent) throws Exception {
+        Properties properties = new Properties();
         properties.put(MAIL_SMTP_HOST, props.getMailServerHost());
 
-        //Required Autentication
         if (props.isAuthenticationRequired()) {
-            properties.put(MAIL_SMTP_AUTH, TRUE_STRING);
+            properties.put(MAIL_SMTP_AUTH, "true");
         }
 
         Session session = Session.getDefaultInstance(properties, new Authenticator() {

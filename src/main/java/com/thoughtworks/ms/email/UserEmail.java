@@ -1,11 +1,7 @@
 package com.thoughtworks.ms.email;
 
-import java.util.logging.Logger;
-
 public class UserEmail {
 
-	private static Logger LOGGER = Logger.getLogger("UserEmail");
-	
 	private String nameUser;
 	
 	private String emailUser;
@@ -31,6 +27,5 @@ public class UserEmail {
 		 
 	     final UserEmail o = (UserEmail) object;
 	     return (this.nameUser.equals(o.nameUser)) && (this.emailUser.equals(o.emailUser));
-
 	}
 }

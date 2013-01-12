@@ -43,13 +43,13 @@ public class PropertiesEmail {
     /**
      * Email address sender
      */
-    public String MAIL_ADDRESS_SENDER_VALUE = null;
+    public String fromAddress = null;
 
 
     /**
      * Name email sender
      */
-    public String MAIL_NAME_SENDER_VALUE = null;
+    public String fromUserName = null;
 
 
     /**
@@ -202,20 +202,12 @@ public class PropertiesEmail {
         authenticationPassword = mAIL_PASSWORD_VALUE;
     }
 
-    public String getMAIL_ADDRESS_SENDER_VALUE() {
-        return MAIL_ADDRESS_SENDER_VALUE;
+    public void setFromAddress(String fromAddress) {
+        this.fromAddress = fromAddress;
     }
 
-    public void setMAIL_ADDRESS_SENDER_VALUE(String mAIL_ADDRESS_SENDER_VALUE) {
-        MAIL_ADDRESS_SENDER_VALUE = mAIL_ADDRESS_SENDER_VALUE;
-    }
-
-    public String getMAIL_NAME_SENDER_VALUE() {
-        return MAIL_NAME_SENDER_VALUE;
-    }
-
-    public void setMAIL_NAME_SENDER_VALUE(String mAIL_NAME_SENDER_VALUE) {
-        MAIL_NAME_SENDER_VALUE = mAIL_NAME_SENDER_VALUE;
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
     }
 
     public String getMAIL_ISSUE_VALUE() {
@@ -282,18 +274,6 @@ public class PropertiesEmail {
         return MAIL_ISSUE;
     }
 
-    public String getMAIL_CC() {
-        return MAIL_CC;
-    }
-
-    public String getMAIL_BCC() {
-        return MAIL_BCC;
-    }
-
-    public String getMAIL_ACTIVATE_BCC() {
-        return MAIL_ACTIVATE_BCC;
-    }
-
     public String getMAIL_ADDRESS_SENDER() {
         return MAIL_ADDRESS_SENDER;
     }
@@ -302,43 +282,15 @@ public class PropertiesEmail {
         return MAIL_NAME_SENDER;
     }
 
-    public String getMAIL_BCC_NAME_VALUE() {
-        return MAIL_BCC_NAME_VALUE;
-    }
-
-    public void setMAIL_BCC_NAME_VALUE(String mAIL_BCC_NAME_VALUE) {
-        MAIL_BCC_NAME_VALUE = mAIL_BCC_NAME_VALUE;
-    }
-
-    public String getMAIL_BCC_ADDRESS_VALUE() {
-        return MAIL_BCC_ADDRESS_VALUE;
-    }
-
-    public void setMAIL_BCC_ADDRESS_VALUE(String mAIL_BCC_ADDRESS_VALUE) {
-        MAIL_BCC_ADDRESS_VALUE = mAIL_BCC_ADDRESS_VALUE;
-    }
-
-    public String getMAIL_CC_NAME_VALUE() {
-        return MAIL_CC_NAME_VALUE;
-    }
-
-    public void setMAIL_CC_NAME_VALUE(String mAIL_CC_NAME_VALUE) {
-        MAIL_CC_NAME_VALUE = mAIL_CC_NAME_VALUE;
-    }
-
-    public String getMAIL_CC_ADDRESS_VALUE() {
-        return MAIL_CC_ADDRESS_VALUE;
-    }
-
-    public void setMAIL_CC_ADDRESS_VALUE(String mAIL_CC_ADDRESS_VALUE) {
-        MAIL_CC_ADDRESS_VALUE = mAIL_CC_ADDRESS_VALUE;
-    }
-
     boolean isAuthenticationRequired() {
         return authenticationNeeded;
     }
 
     int getMailServerPort() {
         return smtpPort;
+    }
+
+    Address getFromAddress() {
+        return new Address(fromUserName, fromAddress);
     }
 }
