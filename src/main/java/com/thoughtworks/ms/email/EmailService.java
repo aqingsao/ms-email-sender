@@ -1,5 +1,6 @@
 package com.thoughtworks.ms.email;
 
+import com.thoughtworks.ms.email.model.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

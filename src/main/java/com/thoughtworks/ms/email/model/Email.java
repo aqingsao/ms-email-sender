@@ -1,5 +1,6 @@
-package com.thoughtworks.ms.email;
+package com.thoughtworks.ms.email.model;
 
+import com.thoughtworks.ms.email.EmailService;
 import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.thoughtworks.ms.email.Recipients.oneRecipients;
 
 public class Email {
 
@@ -40,7 +39,7 @@ public class Email {
     }
 
     public static Email anEmail(Address sender, String subject, String message, Address recipient) {
-        return new Email(sender, null, subject, message, Collections.EMPTY_LIST, oneRecipients(recipient));
+        return new Email(sender, null, subject, message, Collections.EMPTY_LIST, Recipients.oneRecipients(recipient));
     }
 
     public static Email anEmail(Address sender, String subject, String message, Recipients recipients) {
@@ -48,7 +47,7 @@ public class Email {
     }
 
     public static Email anEmail(Address sender, Address replyToAddresses, String subject, String message, Address recipient) {
-        return new Email(sender, replyToAddresses, subject, message, Collections.EMPTY_LIST, oneRecipients(recipient));
+        return new Email(sender, replyToAddresses, subject, message, Collections.EMPTY_LIST, Recipients.oneRecipients(recipient));
     }
 
     public static Email anEmail(Address sender, Address replyToAddresses, String subject, String message, Recipients recipients) {
@@ -56,7 +55,7 @@ public class Email {
     }
 
     public static Email anEmail(Address sender, String subject, String message, String attachment, Address recipient) {
-        return new Email(sender, null, subject, message, Arrays.asList(attachment), oneRecipients(recipient));
+        return new Email(sender, null, subject, message, Arrays.asList(attachment), Recipients.oneRecipients(recipient));
     }
 
     public static Email anEmail(Address sender, String subject, String message, String attachment, Recipients recipients) {
@@ -64,7 +63,7 @@ public class Email {
     }
 
     public static Email anEmail(Address sender, Address replyToAddresses, String subject, String message, String attachment, Address recipient) {
-        return new Email(sender, replyToAddresses, subject, message, Arrays.asList(attachment), oneRecipients(recipient));
+        return new Email(sender, replyToAddresses, subject, message, Arrays.asList(attachment), Recipients.oneRecipients(recipient));
     }
 
     public static Email anEmail(Address sender, Address replyToAddresses, String subject, String message, String attachment, Recipients recipients) {
@@ -72,7 +71,7 @@ public class Email {
     }
 
     public static Email anEmail(Address sender, String subject, String message, List<String> attachments, Address recipient) {
-        return new Email(sender, null, subject, message, attachments, oneRecipients(recipient));
+        return new Email(sender, null, subject, message, attachments, Recipients.oneRecipients(recipient));
     }
 
     public static Email anEmail(Address sender, String subject, String message, List<String> attachments, Recipients recipients) {
@@ -80,7 +79,7 @@ public class Email {
     }
 
     public static Email anEmail(Address sender, Address replyToAddresses, String subject, String message, List<String> attachments, Address recipient) {
-        return new Email(sender, replyToAddresses, subject, message, attachments, oneRecipients(recipient));
+        return new Email(sender, replyToAddresses, subject, message, attachments, Recipients.oneRecipients(recipient));
     }
 
     public static Email anEmail(Address sender, Address replyToAddresses, String subject, String message, List<String> attachments, Recipients recipients) {

@@ -2,8 +2,8 @@ package com.thoughtworks.ms.email;
 
 import org.junit.Test;
 
-import static com.thoughtworks.ms.email.Address.anAddress;
-import static com.thoughtworks.ms.email.Email.anEmail;
+import static com.thoughtworks.ms.email.model.Address.anAddress;
+import static com.thoughtworks.ms.email.model.Email.anEmail;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 

@@ -1,4 +1,4 @@
-package com.thoughtworks.ms.email;
+package com.thoughtworks.ms.email.model;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;

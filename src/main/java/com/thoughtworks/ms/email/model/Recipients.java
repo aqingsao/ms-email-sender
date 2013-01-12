@@ -1,4 +1,4 @@
-package com.thoughtworks.ms.email;
+package com.thoughtworks.ms.email.model;
 
 import javax.mail.internet.InternetAddress;
 import java.util.Arrays;
