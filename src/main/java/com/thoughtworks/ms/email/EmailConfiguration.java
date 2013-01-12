@@ -1,6 +1,6 @@
 package com.thoughtworks.ms.email;
 
-public class PropertiesEmail {
+public class EmailConfiguration {
 
     public final int MAIL_PORT_DEFAULT_VALUE = 25;
 
@@ -18,7 +18,7 @@ public class PropertiesEmail {
 
     public String authenticationPassword = null;
 
-    public PropertiesEmail() {
+    public EmailConfiguration() {
 
     }
 
@@ -38,20 +38,20 @@ public class PropertiesEmail {
         return authenticationUserName;
     }
 
-    public void setAuthenticationUserName(String mAIL_USER_VALUE) {
-        authenticationUserName = mAIL_USER_VALUE;
+    public void setAuthenticationUserName(String authenticationUserName) {
+        this.authenticationUserName = authenticationUserName;
     }
 
     public String getAuthenticationPassword() {
         return authenticationPassword;
     }
 
-    public void setAuthenticationPassword(String mAIL_PASSWORD_VALUE) {
-        authenticationPassword = mAIL_PASSWORD_VALUE;
+    public void setAuthenticationPassword(String authenticationPassword) {
+        this.authenticationPassword = authenticationPassword;
     }
 
-    public void setAuthenticationNeeded(Boolean mAIL_AUTENTICATION_VALUE) {
-        authenticationNeeded = mAIL_AUTENTICATION_VALUE;
+    public void setAuthenticationNeeded(Boolean authenticationNeeded) {
+        this.authenticationNeeded = authenticationNeeded;
     }
 
     boolean isAuthenticationRequired() {

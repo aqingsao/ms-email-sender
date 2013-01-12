@@ -13,7 +13,7 @@ public class EmailServiceTest {
 
     @Test
     public void should_send_email_with_163_as_smtp_server() {
-        PropertiesEmail props = new PropertiesEmail();
+        EmailConfiguration props = new EmailConfiguration();
         props.setMailServerHost("smtp.163.com");
 
         props.setAuthenticationUserName("vinci_zhang");

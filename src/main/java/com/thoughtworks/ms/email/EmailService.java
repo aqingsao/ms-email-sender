@@ -15,9 +15,9 @@ public class EmailService implements TransportListener{
     private static final String MAIL_SMTP_HOST = "mail.smtp.host";
     private static final String SMTP = "smtp";
 
-    private PropertiesEmail props;
+    private EmailConfiguration props;
 
-    public EmailService(PropertiesEmail props){
+    public EmailService(EmailConfiguration props){
         this.props = props;
     }
 
@@ -40,7 +40,7 @@ public class EmailService implements TransportListener{
         }
     }
 
-    private Session openSession(Properties properties, final PropertiesEmail props) {
+    private Session openSession(Properties properties, final EmailConfiguration props) {
         Session session = Session.getDefaultInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -53,7 +53,7 @@ public class EmailService implements TransportListener{
         return session;
     }
 
-    private Properties initProperties(PropertiesEmail props) {
+    private Properties initProperties(EmailConfiguration props) {
         Properties properties = new Properties();
         properties.put(MAIL_SMTP_HOST, props.getMailServerHost());
 
