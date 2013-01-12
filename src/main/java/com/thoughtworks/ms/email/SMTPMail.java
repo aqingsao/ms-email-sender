@@ -1,221 +1,143 @@
 package com.thoughtworks.ms.email;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.mail.Message;
+import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class SMTPMail {
-		
-	  /**log*/
-	  private Logger log = Logger.getLogger("SMTPMail");
 
-	  /**toAddresses*/ 
-	  protected Map toAddresses = new HashMap();
-	  
-	  /**ccAddresses*/
-	  protected Map ccAddresses = new HashMap();
-	  
-	  /**bccAddresses*/
-	  protected Map bccAddresses = new HashMap();
-	  
-	  /**replyToAddresses*/
-	  protected Map replyToAddresses = new HashMap();
+    /**
+     * log
+     */
+    private Logger log = Logger.getLogger("SMTPMail");
 
-	  /**fromName*/
-	  protected String fromName = null;
-	  
-	  /**fromAddress*/
-	  protected String fromAddress = null;
-	  
-	  /**subject*/
-	  protected String subject = null;
+    /**
+     * toAddresses
+     */
+    protected List<Address> toAddresses = new ArrayList<Address>();
 
-	  /**messageText*/
-	  protected String messageText = new String();
+    /**
+     * ccAddresses
+     */
+    protected List<Address> ccAddresses = new ArrayList<Address>();
 
-	  /** List  of attachments */
-	  private List<SMTPAttachment> attachments = new ArrayList<SMTPAttachment>();
+    /**
+     * bccAddresses
+     */
+    protected List<Address> bccAddresses = new ArrayList<Address>();
 
-	  /**
-	   * Constructor
-	   * @param fromName
-	   * @param fromAddress
-	   * @param subject
-	   */
-	  public SMTPMail(String fromName, String fromAddress, String subject) {
-	    this.fromName = fromName;
-	    this.fromAddress = fromAddress;
-	    this.subject = subject;
-	  }
+    /**
+     * replyToAddresses
+     */
+    protected List<Address> replyToAddresses = new ArrayList<Address>();
 
-	  /**
-	   * get from
-	   * @return
-	   * @throws Exception
-	   */
-	  public InternetAddress getFrom() throws Exception{
-	    return new InternetAddress(fromAddress, fromName);
-	  }
+    /**
+     * fromName
+     */
+    protected String fromName = null;
 
-	  /**
-	   * get subject
-	   * @return
-	   */
-	  public String getSubject(){
-	    return subject;
-	  }
+    /**
+     * fromAddress
+     */
+    protected String fromAddress = null;
 
-	  /**
-	   * get Message text
-	   * @return
-	   */
-	  public String getMessageText(){
-	    return messageText;
-	  }
+    /**
+     * subject
+     */
+    protected String subject = null;
 
+    private List<SMTPAttachment> attachments = new ArrayList<SMTPAttachment>();
 
-	  /**
-	   * set Message text
-	   * @param messageText
-	   */
-	  public void setMessageText(String messageText) {
-	    this.messageText = messageText;
-	  }
+    private static final String TYPE_HTML_UTF_8 = "text/html; charset=UTF-8";
 
-	  /**
-	   * add an address
-	   * @param name
-	   * @param address
-	   */
-	  public void addToAddress(String name, String address) {
-	    toAddresses.put(name, address);
-	  }
+    public SMTPMail(String fromName, String fromAddress, String subject) {
+        this.fromName = fromName;
+        this.fromAddress = fromAddress;
+        this.subject = subject;
+    }
 
-	  /**
-	   * 
-	   * @param name
-	   * @param address
-	   */
-	  public void addCcAddress(String name, String address) {
-	    ccAddresses.put(name, address);
-	  }
+    public void addToAddress(String name, String address) {
+        toAddresses.add(new Address(name, address));
+    }
 
-	  /**
-	   * 
-	   * @param name
-	   * @param address
-	   */
-	  public void addBccAddress(String name, String address) {
-	    bccAddresses.put(name, address);
-	  }
+    public void addCcAddress(String name, String address) {
+        ccAddresses.add(new Address(name, address));
+    }
 
-	  /**
-	   * 
-	   * @param name
-	   * @param address
-	   */
-	  public void addReplyToAddress(String name, String address) {
-	    replyToAddresses.put(name, address);
-	  }
+    public void addBccAddress(String name, String address) {
+        bccAddresses.add(new Address(name, address));
+    }
 
-	  /**
-	   * 
-	   * @return
-	   * @throws Exception
-	   */
-	  public InternetAddress[] getToAddresses()  throws Exception{
-	    return getAddresses(toAddresses);
-	  }
+    public void addReplyToAddress(String name, String address) {
+        replyToAddresses.add(new Address(name, address));
+    }
 
-	  /**
-	   * 
-	   * @return
-	   * @throws Exception
-	   */
-	  public InternetAddress[] getCcAddresses()  throws Exception{
-	    return getAddresses(ccAddresses);
-	  }
+    private InternetAddress[] getAddresses(List<Address> addresses) throws UnsupportedEncodingException {
+        InternetAddress[] internetAddresses = new InternetAddress[addresses.size()];
+        int count = 0;
+        for (Address address : addresses) {
+            internetAddresses[count++] = new InternetAddress(address.getUserAddress(), address.getUserName());
+        }
 
-	/**
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	  public InternetAddress[] getBccAddresses()  throws Exception{
-	    return getAddresses(bccAddresses);
-	  }
+        return internetAddresses;
+    }
 
-	  /**
-	   * 
-	   * @return
-	   * @throws Exception
-	   */
-	  public InternetAddress[] getReplyToAddresses()  throws Exception{
-	    return getAddresses(replyToAddresses);
-	  }
+    public void addAttachment(SMTPAttachment attachment) {
+        this.attachments.add(attachment);
+    }
 
-	  /**
-	   * 
-	   * @param addresses
-	   * @return
-	   * @throws Exception
-	   */
-	  private InternetAddress[] getAddresses(Map addresses)
-	    throws Exception {
-	    InternetAddress address = null;
-	    ArrayList list = new ArrayList();
-	    String name = null;
-	    String email = null;
-	    Iterator i = addresses.keySet().iterator();
+    public List<SMTPAttachment> getAttachments() {
+        return attachments;
+    }
 
-	    while (i.hasNext()) {
-	      name = (String) i.next();
-	      email = (String) addresses.get(name);
+    public void setAttachments(List<SMTPAttachment> lattachments) {
+        this.attachments.addAll(lattachments);
+    }
 
-	      try{
-	    	  list.add(new InternetAddress(email, name));
-	      }
-	      catch (Exception ex) {
-	        log.info("E-mail  not valid " + ex);
-	      }
-	    }
+    MimeMessage prepareMessage(Session session) throws Exception {
+        //Create message
+        MimeMessage message = new MimeMessage(session);
 
-	    if (list.isEmpty()) {
-	      return null;
-	    }
+        // Properties of message
+        message.setFrom(new InternetAddress(fromAddress, fromName));
+        message.setSubject(subject);
+        message.setSentDate(new java.util.Date());
 
-	    InternetAddress all[] = new InternetAddress[list.size()];
-	    all = (InternetAddress[]) list.toArray(all);
-	    return all;
-	  }
+        message.setReplyTo(getAddresses(replyToAddresses));
+        message.setRecipients(Message.RecipientType.TO, getAddresses(toAddresses));
+        message.setRecipients(Message.RecipientType.CC, getAddresses(ccAddresses));
+        message.setRecipients(Message.RecipientType.BCC, getAddresses(bccAddresses));
 
-	  /**
-	   * Add attachment
-	   * @param attachment
-	   */
-		public void addAttachment(SMTPAttachment attachment) {
-			this.attachments.add(attachment);
-		}
+        return message;
+    }
 
-		/**
-		 * get attachmet
-		 * @return
-		 */
-		public List<SMTPAttachment> getAttachments() {
-			return attachments;
-		}
-		
-		/**
-		 * set attachment
-		 * @param attachments
-		 */
-		public void setAttachments(List<SMTPAttachment> lattachments) {
-			this.attachments.addAll(lattachments);
-		}
-		
+    MimeMessage buildMessage(String emailContent, Session session) throws Exception {
+        MimeMultipart multiPart = new MimeMultipart();
+
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        //Content
+        bodyPart.setContent(emailContent, TYPE_HTML_UTF_8);
+        multiPart.addBodyPart(bodyPart);
+
+        // Attachment files
+        for (SMTPAttachment attachment : getAttachments()) {
+            multiPart.addBodyPart(attachment.asBodyPart());
+        }
+
+        MimeMessage message = prepareMessage(session);
+        message.setContent(multiPart);
+
+        message.saveChanges();
+        return message;
+    }
 }

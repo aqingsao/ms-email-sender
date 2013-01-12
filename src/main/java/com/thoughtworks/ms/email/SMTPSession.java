@@ -1,289 +1,117 @@
 package com.thoughtworks.ms.email;
 
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
+import javax.mail.*;
+import javax.mail.event.TransportEvent;
+import javax.mail.event.TransportListener;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
-public class SMTPSession {
+public class SMTPSession implements TransportListener {
 
-	 /** Log */
-	 private Logger log = Logger.getLogger("SMTPSession");
-	 
-	 /** Smtp auth*/
-	 private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
-	 
-	 /** Smtp host*/
-	 private static final String MAIL_SMTP_HOST = "mail.smtp.host";
-	 
-	 /**Cte True*/
-	 private static final Boolean TRUE = new Boolean(true);
-	 
-	 /**Cte False*/
-	 private static final Boolean FALSE = new Boolean(false);
-	
-	 /**Cte True*/
-	 private static final String TRUE_STRING = new String("true");
-	 
-	 /**Cte False*/
-	 private static final String FALSE_STRING = new String("false");
-	 
-	 /** Properties */
-	 private PropertiesEmail props = null;
+    private static final Logger LOGGER = Logger.getLogger(SMTPSession.class.getName());
 
-	 /** Properties */
-	 private Properties properties= null;
-	 
-	/** Debug */
-	private boolean debug = false;
-	
-	/** Format UTF 8*/
-	private static final String TYPE_HTML_UTF_8 = "text/html; charset=UTF-8";
-	
-	/** Format ISO*/
-	private static final String TYPE_HTML_ISO_88591 = "text/html; charset=ISO-8859-1";
-	
-	/** SMTP*/
-	private static final String SMTP = "smtp";
-	
-	/** Host */
-	private String host;
-	
-	/** User */
-	private String user;
-	
-	/** Password */
-	private String password;
-	
-	/** Port*/
-	private int port = 25;
-	
-	/** Default port */
-	private static int DEFAULT_PORT = 25;
-	
+    /**
+     * Smtp auth
+     */
+    private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
 
-	/**
-	 * Constructor
-	 */
-	public SMTPSession() {
-	}
+    /**
+     * Smtp host
+     */
+    private static final String MAIL_SMTP_HOST = "mail.smtp.host";
 
-	/**
-	 * Constructor
-	 * @param props 
-	 */
-	public SMTPSession(PropertiesEmail props) {
-		
-		this(props.getMAIL_SERVER_VALUE(), 
-				props.getMAIL_PORT_VALUE() != null ? (Integer)props.getMAIL_PORT_VALUE() : DEFAULT_PORT  , 
-				props.getMAIL_USER_VALUE(),
-				props.getMAIL_PASSWORD_VALUE());
-		
-		this.props = props;
-		this.properties = new Properties();
-	}
+    /**
+     * Cte True
+     */
+    private static final Boolean TRUE = true;
 
-	/**
-	 * Constructor
-	 * @param host
-	 */
-	public SMTPSession(String host) {
-		this(host, DEFAULT_PORT, null, null);
-	}
+    /**
+     * Cte False
+     */
+    private static final Boolean FALSE = false;
 
-	/**
-	 * Constructor
-	 * @param host
-	 * @param user
-	 * @param password
-	 */
-	public SMTPSession(String host, String user, String password) {
-		this(host, DEFAULT_PORT, user, password);
-	}
+    /**
+     * Cte True
+     */
+    private static final String TRUE_STRING = "true";
 
-	/**
-	 * Constructor
-	 * @param host
-	 * @param port
-	 * @param user
-	 * @param password
-	 */
-	public SMTPSession(String host, int port, String user, String password) {
-		this.host = host;
-		this.user = user;
-		this.password = password;
-		this.port = port;
-	}
-	
-	/**
-	 * Constructor
-	 * @param props
-	 * @param host
-	 * @param port
-	 * @param user
-	 * @param password
-	 */
-	public SMTPSession(PropertiesEmail props, String host, int port, String user, String password) {
-		this.props = props;
-		this.host = host;
-		this.user = user;
-		this.password = password;
-		this.port = port;
-	}
+    /**
+     * Cte False
+     */
+    private static final String FALSE_STRING = "false";
 
-	/**
-	 * Sets the debug
-	 * @param value
-	 */
-	public void setDebug(boolean value) {
-		debug = value;
-	}
-	
+    /**
+     * Properties
+     */
+    private PropertiesEmail props = null;
 
-	/**
-	 * Send a email
-	 * @param props
-	 * @param mail
-	 * @param mensajeHTML
-	 * @throws Exception
-	 */
-	public void sendMail(PropertiesEmail props, SMTPMail mail, String mensajeHTML) throws Exception {
+    /**
+     * Properties
+     */
+    private Properties properties = null;
 
-			properties.put(MAIL_SMTP_HOST, host);
-			
-			//Required Autentication
-			if(props.getMAIL_AUTENTICATION_VALUE() != null && 
-					((Boolean)props.getMAIL_AUTENTICATION_VALUE()).booleanValue() == true){
-				
-				properties.put(MAIL_SMTP_AUTH, TRUE_STRING);
-			}
-			
-			
-			AutenticacionSMTP auth = new AutenticacionSMTP(this.props); 
-			Session session = Session.getDefaultInstance(properties, auth);
-			session.setDebug(debug);
+    /**
+     * Format ISO
+     */
+    private static final String TYPE_HTML_ISO_88591 = "text/html; charset=ISO-8859-1";
 
-			//Create message
-			MimeMessage message = new MimeMessage(session);
+    /**
+     * SMTP
+     */
+    private static final String SMTP = "smtp";
 
-			//Body email
-			MimeMultipart mm = new MimeMultipart();
-			MimeBodyPart bp = new MimeBodyPart();
+    public SMTPSession(PropertiesEmail props) {
+        this.props = props;
+        this.properties = new Properties();
+    }
 
-			//Content
-			bp.setContent(mensajeHTML, TYPE_HTML_UTF_8);
-			mm.addBodyPart(bp);
+    public void sendMail(final PropertiesEmail props, SMTPMail mail, String emailContent) throws Exception {
+        properties.put(MAIL_SMTP_HOST, props.getMailServerHost());
 
-			// Attachment files
-			for (SMTPAttachment attachment : mail.getAttachments()) {
-				MimeBodyPart att = new MimeBodyPart();
-				att.setDataHandler(attachment.getDataHandler());
-				att.setFileName(attachment.getFileName());
-				mm.addBodyPart(att);
-			}
+        //Required Autentication
+        if (props.isAuthenticationRequired()) {
+            properties.put(MAIL_SMTP_AUTH, TRUE_STRING);
+        }
 
-			message.setContent(mm);
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(
+                        props.getAuthenticationUserName(),
+                        props.getAuthenticationPassword());
+            }
+        });
+        session.setDebug(true);
 
-			//Fill email
-			this.prepareMessage(message, mail);
+        MimeMessage message = mail.buildMessage(emailContent, session);
 
-			//Connect and send email
-			Transport transport = session.getTransport(SMTP);
-			if (user != null && password != null) {
-				transport.connect(host, user, password);
-			} else {
-				transport.connect();
-			}
-			
-			transport.send(message);
-			transport.close();
-			
-	}
+        sendEmail(session, message, this.props.getMailServerHost(), this.props.getMailServerPort(), this.props.getAuthenticationUserName(), this.props.getAuthenticationPassword());
+    }
 
-	/**
-	 * Prepared message for send
-	 * @param message
-	 * @param mail
-	 * @return
-	 * @throws Exception
-	 */
-	private MimeMessage prepareMessage(MimeMessage message, SMTPMail mail)
-			throws Exception {
+    private void sendEmail(Session session, MimeMessage message, String host, int port, String user, String password) throws MessagingException {
+        Transport transport = session.getTransport(SMTP);
+        transport.addTransportListener(this);
+        transport.connect(host, port, user, password);
 
-		// Properties of message
-		message.setFrom(mail.getFrom());
-		message.setSubject(mail.getSubject());
-		message.setSentDate(new java.util.Date());
-		// message.setText(mail.getMessageText());
+        transport.send(message);
+        transport.close();
+    }
 
-		// Address to send
-		InternetAddress[] addresses = mail.getReplyToAddresses();
-		if (addresses != null) {
-			message.setReplyTo(addresses);
-		}
-		addresses = mail.getToAddresses();
-		if (addresses != null) {
-			message.setRecipients(Message.RecipientType.TO, addresses);
-		}
-		addresses = mail.getCcAddresses();
-		if (addresses != null) {
-			message.setRecipients(Message.RecipientType.CC, addresses);
-		}
-		addresses = mail.getBccAddresses();
-		if (addresses != null) {
-			message.setRecipients(Message.RecipientType.BCC, addresses);
-		}
+    @Override
+    public void messageDelivered(TransportEvent e) {
+        LOGGER.log(Level.INFO, "Message was delivered successfully.");
+    }
 
-		
-		message.saveChanges();
-		return message;
-	}
+    @Override
+    public void messageNotDelivered(TransportEvent e) {
+        LOGGER.log(Level.WARNING, "Message was not delivered: " + e.getType());
+    }
 
-	
-	
-	
-}
-
-
-
-
-
-/**
- * Class  for authentication with  the mail server
- * @author jariera
- * @version 1.0
- */
-class AutenticacionSMTP extends Authenticator {
-	 
-	 /** Log */
-	 private Logger log = Logger.getLogger("AutenticacionSMTP");
-
-	 /** Properties email */
-	 private PropertiesEmail props = null;
-	 
-	 /**
-	  * Constructor
-	  * @param props
-	  */
-	 public AutenticacionSMTP(PropertiesEmail props){
-		 this.props = props; 
-	 }
-	 
-	@Override
-	protected PasswordAuthentication getPasswordAuthentication() {
-		log.info("Send autentication server SMTP");
-		
-		return new PasswordAuthentication(
-				props.getMAIL_USER_VALUE(),
-				props.getMAIL_PASSWORD_VALUE());
-		
-	}
+    @Override
+    public void messagePartiallyDelivered(TransportEvent e) {
+        LOGGER.log(Level.WARNING, "Message was partially delivered: " + e.getType());
+    }
 }
