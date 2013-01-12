@@ -24,7 +24,7 @@ public class SMTPSession implements TransportListener {
         this.props = props;
     }
 
-    public void sendMail(final PropertiesEmail props, SMTPMail mail, String emailContent) throws Exception {
+    public void sendMail(final PropertiesEmail props, Email mail) throws Exception {
         Properties properties = new Properties();
         properties.put(MAIL_SMTP_HOST, props.getMailServerHost());
 
@@ -42,7 +42,7 @@ public class SMTPSession implements TransportListener {
         });
         session.setDebug(true);
 
-        MimeMessage message = mail.buildMessage(emailContent, session);
+        MimeMessage message = mail.buildMessage(mail.getMessage(), session);
 
         sendEmail(session, message, this.props.getMailServerHost(), this.props.getMailServerPort(), this.props.getAuthenticationUserName(), this.props.getAuthenticationPassword());
     }

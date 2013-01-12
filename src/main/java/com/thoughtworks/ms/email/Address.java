@@ -10,9 +10,13 @@ public class Address {
     private String userName;
     private String userAddress;
 
-    public Address(String userName, String userAddress) {
+    private Address(String userName, String userAddress) {
         this.userName = userName;
         this.userAddress = userAddress;
+    }
+
+    public static Address anAddress(String userName, String userAddress) {
+        return new Address(userName, userAddress);
     }
 
     public String getUserName() {

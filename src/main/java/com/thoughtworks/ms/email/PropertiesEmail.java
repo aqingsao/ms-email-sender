@@ -18,16 +18,6 @@ public class PropertiesEmail {
 
     public String authenticationPassword = null;
 
-    public String fromAddress = null;
-
-    public String fromUserName = null;
-
-    /**
-     * Issues email
-     */
-    public String MAIL_ISSUE_VALUE = null;
-
-
     //Others properties
     public final String MAIL_SERVER = "mail.server";
 
@@ -85,22 +75,6 @@ public class PropertiesEmail {
         authenticationPassword = mAIL_PASSWORD_VALUE;
     }
 
-    public void setFromAddress(String fromAddress) {
-        this.fromAddress = fromAddress;
-    }
-
-    public void setFromUserName(String fromUserName) {
-        this.fromUserName = fromUserName;
-    }
-
-    public String getMAIL_ISSUE_VALUE() {
-        return MAIL_ISSUE_VALUE;
-    }
-
-    public void setMAIL_ISSUE_VALUE(String mAIL_ISSUE_VALUE) {
-        MAIL_ISSUE_VALUE = mAIL_ISSUE_VALUE;
-    }
-
     public void setAuthenticationNeeded(Boolean mAIL_AUTENTICATION_VALUE) {
         authenticationNeeded = mAIL_AUTENTICATION_VALUE;
     }
@@ -147,9 +121,5 @@ public class PropertiesEmail {
 
     int getMailServerPort() {
         return smtpPort;
-    }
-
-    Address getFromAddress() {
-        return new Address(fromUserName, fromAddress);
     }
 }
