@@ -1,9 +1,6 @@
 package com.thoughtworks.ms.email;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -14,10 +11,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SMTPMail {
 
-    private Logger LOGGER = Logger.getLogger(SMTPMail.class.getName());
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
     protected List<Address> toAddresses = new ArrayList<Address>();
 

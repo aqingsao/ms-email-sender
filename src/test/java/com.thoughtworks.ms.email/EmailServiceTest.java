@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class SendEmailUtilsTest {
+public class EmailServiceTest {
 
     @Test
     public void should_send_email_with_163_as_smtp_server() {
@@ -19,7 +19,7 @@ public class SendEmailUtilsTest {
 
         props.setMAIL_ISSUE_VALUE("a test email");
 
-        boolean result = SendEmailUtils.sendEmailUser(props, "Just a test", new Address("Xiaoqing Zhang", "vinci.zhang@gmail.com"));
+        boolean result = new EmailService().sendEmailUser(props, "Just a test", new Address("Xiaoqing Zhang", "vinci.zhang@gmail.com"));
         assertThat(result, is(true));
     }
 }

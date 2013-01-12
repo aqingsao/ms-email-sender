@@ -1,17 +1,16 @@
 package com.thoughtworks.ms.email;
 
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.event.TransportEvent;
 import javax.mail.event.TransportListener;
 import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 public class SMTPSession implements TransportListener {
 
-    private static final Logger LOGGER = Logger.getLogger(SMTPSession.class.getName());
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
     private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
 
@@ -59,16 +58,16 @@ public class SMTPSession implements TransportListener {
 
     @Override
     public void messageDelivered(TransportEvent e) {
-        LOGGER.log(Level.INFO, "Message was delivered successfully.");
+        LOGGER.info("Message was delivered successfully.");
     }
 
     @Override
     public void messageNotDelivered(TransportEvent e) {
-        LOGGER.log(Level.WARNING, "Message was not delivered: " + e.getType());
+        LOGGER.warn("Message was not delivered: " + e.getType());
     }
 
     @Override
     public void messagePartiallyDelivered(TransportEvent e) {
-        LOGGER.log(Level.WARNING, "Message was partially delivered: " + e.getType());
+        LOGGER.warn("Message was partially delivered: " + e.getType());
     }
 }
