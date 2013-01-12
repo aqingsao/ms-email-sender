@@ -140,8 +140,8 @@ public class SMTPSession {
 		
 		this(props.getMAIL_SERVER_VALUE(), 
 				props.getMAIL_PORT_VALUE() != null ? (Integer)props.getMAIL_PORT_VALUE() : DEFAULT_PORT  , 
-				null, 
-				null);
+				props.getMAIL_USER_VALUE(),
+				props.getMAIL_PASSWORD_VALUE());
 		
 		this.props = props;
 		this.properties = new Properties();
